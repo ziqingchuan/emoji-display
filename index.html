@@ -77,18 +77,33 @@
         function renderEmojiGrid(emojis) {
             const grid = document.getElementById('emojiGrid');
             grid.innerHTML = '';
-            
+
+            // 格式化shortcode的函数
+            function formatShortcode(shortcode) {
+                // 如果长度小于等于2，则直接返回（无需处理）
+                if (shortcode.length <= 2) {
+                    return shortcode;
+                }
+
+                // 中间部分最长保留20个字符，超出则用...替代
+                return shortcode.length > 21
+                    ? shortcode.substring(0, 18) + '...'
+                    : shortcode;
+            }
+
             emojis.forEach(emoji => {
                 const card = document.createElement('div');
                 card.className = 'emoji-card bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-md';
+                // 使用格式化后的shortcode
                 card.innerHTML = `
-                    <div class="text-4xl mb-2">${emoji.unicode}</div>
-                    <div class="text-sm text-gray-600 font-mono">:${emoji.shortcode}:</div>
-                `;
+            <div class="text-4xl mb-2">${emoji.unicode}</div>
+            <div class="text-sm text-gray-600 font-mono">:${formatShortcode(emoji.shortcode)}:</div>
+        `;
                 card.addEventListener('click', () => copyToClipboard(emoji.unicode));
                 grid.appendChild(card);
             });
         }
+
 
         // 复制到剪贴板
         function copyToClipboard(text) {
